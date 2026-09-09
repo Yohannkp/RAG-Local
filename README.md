@@ -160,6 +160,13 @@ en fin d'exécution (n'affecte pas ta bibliothèque de documents réels).
   ciblés. Très bien à l'échelle d'un usage personnel (dizaines à quelques
   centaines de documents) ; à plusieurs milliers de documents, ça deviendrait
   le goulot d'étranglement (voir pistes ci-dessous)
+- `chunk_size_chars=1200` et `top_k=6` (voir `app/config.py`) ont été ajustés
+  après un cas réel observé : un chunk de 2400 caractères mélangeait 3
+  sous-sections d'une même page dense (bonus promo / choix de majeure /
+  césure), diluant sa pertinence sémantique au point de finir 6ᵉ sur 20
+  candidats après reranking — juste hors du `top_k=5` d'origine. Des chunks
+  plus petits réduisent ce risque de mélange ; seuls les nouveaux imports en
+  bénéficient (réimporter un document pour appliquer le nouveau découpage)
 
 ## Pistes d'amélioration
 

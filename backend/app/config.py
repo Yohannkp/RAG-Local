@@ -23,9 +23,16 @@ class Settings(BaseSettings):
     embed_keep_alive: str = "30m"
     vision_keep_alive: str = "1m"
 
-    chunk_size_chars: int = 2400
-    chunk_overlap_chars: int = 300
-    top_k: int = 5
+    # Chunks plus petits = moins de risque qu'un chunk mélange plusieurs
+    # sous-sections différentes d'une même page dense (ça dilue la pertinence
+    # sémantique du chunk pour n'importe laquelle des sous-sections qu'il
+    # contient). Affecte seulement les nouveaux imports — les documents déjà
+    # indexés gardent leur découpage existant sauf réimport.
+    chunk_size_chars: int = 1200
+    chunk_overlap_chars: int = 150
+    # 6 plutôt que 5 : rattrape les cas où un passage pertinent finit juste
+    # hors du top-5 après reranking (observé en pratique, voir README).
+    top_k: int = 6
 
     # Recherche hybride : nombre de candidats remontés par chaque méthode
     # (BM25 + vectoriel) avant fusion RRF et reranking.
