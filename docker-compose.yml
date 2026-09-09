@@ -1,0 +1,45 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      RAG_OLLAMA_BASE_URL: http://host.docker.internal:11434
+      RAG_CHAT_MODEL: qwen3:8b
+      RAG_EMBED_MODEL: nomic-embed-text
+      RAG_VISION_MODEL: qwen3-vl:4b
+    volumes:
+      - ./backend/data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # requis sous Linux, no-op sous Windows/Mac
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  # Ollama tourne nativement sur l'hôte (voir README) car le passthrough GPU
+  # via Docker Desktop sous Windows est fragile. Sous Linux avec un GPU NVIDIA,
+  # décommente ce service pour tout conteneuriser :
+  #
+  # ollama:
+  #   image: ollama/ollama
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: all
+  #             capabilities: [gpu]
+  #
+  # volumes:
+  #   ollama_data:

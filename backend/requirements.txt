@@ -1,0 +1,12 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+sse-starlette==2.2.1
+httpx==0.28.1
+pydantic-settings==2.7.1
+sqlmodel==0.0.22
+pypdf[image]==5.1.0
+python-docx==1.1.2
+langchain-text-splitters==0.3.4
+chromadb==0.5.23
+posthog<3
+python-multipart==0.0.20
