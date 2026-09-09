@@ -16,7 +16,12 @@ const SourceViewerDialog = dynamic(
   { ssr: false }
 );
 
-export function ChatWindow({ selectedIds }: { selectedIds: string[] }) {
+interface ChatWindowProps {
+  selectedIds: string[];
+  documentCount: number;
+}
+
+export function ChatWindow({ selectedIds, documentCount }: ChatWindowProps) {
   const { messages, isStreaming, isWarmingUp, error, sendMessage } = useChatStream();
   const [viewerSource, setViewerSource] = useState<Source | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -36,7 +41,11 @@ export function ChatWindow({ selectedIds }: { selectedIds: string[] }) {
               service externe.
             </p>
             <p className="text-xs">
-              Sélectionne un ou plusieurs documents à gauche, puis pose ta question.
+              {documentCount === 0
+                ? "Importe un document à gauche pour commencer."
+                : selectedIds.length === 0
+                  ? `Pose ta question — elle sera cherchée dans tes ${documentCount} document${documentCount > 1 ? "s" : ""}. Sélectionne-en un ou plusieurs à gauche pour restreindre la recherche.`
+                  : "Pose ta question."}
             </p>
           </div>
         ) : (
@@ -64,8 +73,8 @@ export function ChatWindow({ selectedIds }: { selectedIds: string[] }) {
           onSend={(text) => sendMessage(text, selectedIds)}
           disabled={isStreaming}
           placeholder={
-            selectedIds.length === 0
-              ? "Sélectionne au moins un document pour commencer…"
+            documentCount === 0
+              ? "Importe un document pour commencer…"
               : undefined
           }
         />

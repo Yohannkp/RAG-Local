@@ -41,7 +41,10 @@ de la cacher derrière un framework RAG tout-en-un.
   décoratives) rencontrée dans un PDF ou un DOCX — page scannée, capture d'écran,
   graphique, tableau photographié — est décrite/transcrite automatiquement par un
   modèle de vision local (`qwen3-vl:4b`) et devient cherchable comme du texte normal
-- Sélection des documents à interroger (un, plusieurs, ou toute la bibliothèque)
+- **Recherche automatique sur toute la bibliothèque par défaut** — pas besoin de
+  sélectionner un document à chaque question, même avec beaucoup de fichiers
+  importés ; la sélection manuelle reste possible pour restreindre la recherche
+  à un ou plusieurs documents précis
 - Bannière d'état si Ollama est injoignable ou qu'un modèle requis est manquant
 - **Suite d'évaluation RAGAS locale** (voir [Évaluation](#évaluation)) : mesure
   faithfulness / context precision / context recall / answer relevancy sur le
@@ -142,11 +145,18 @@ en fin d'exécution (n'affecte pas ta bibliothèque de documents réels).
   l'image Docker du backend (~1-2 Go) ; le reranker tourne en CPU pur, le GPU
   restant entièrement dédié à Ollama
 - Mono-utilisateur, pas d'authentification — pensé pour un usage local individuel
+- La recherche par défaut porte sur toute la bibliothèque : le corpus BM25 est
+  reconstruit à chaque question à partir de tous les chunks des documents
+  ciblés. Très bien à l'échelle d'un usage personnel (dizaines à quelques
+  centaines de documents) ; à plusieurs milliers de documents, ça deviendrait
+  le goulot d'étranglement (voir pistes ci-dessous)
 
 ## Pistes d'amélioration
 
-GraphRAG pour le raisonnement inter-documents, boucle agentique (le modèle décide
-de re-chercher s'il manque d'information), OCR dédié (`pytesseract`) en complément
-de l'analyse par vision pour les cas ambigus, CI GitHub Actions exécutant `eval/`
-comme gate de qualité, gestion de l'historique de conversation persistant
+Index BM25 persistant (au lieu d'être reconstruit à chaque question) pour tenir
+à l'échelle de milliers de documents, GraphRAG pour le raisonnement
+inter-documents, boucle agentique (le modèle décide de re-chercher s'il manque
+d'information), OCR dédié (`pytesseract`) en complément de l'analyse par vision
+pour les cas ambigus, CI GitHub Actions exécutant `eval/` comme gate de
+qualité, gestion de l'historique de conversation persistant
 (actuellement en mémoire côté client uniquement).

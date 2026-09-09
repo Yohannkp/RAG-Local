@@ -13,9 +13,14 @@ import type { DocumentItem } from "@/lib/types";
 interface DocumentLibraryProps {
   selectedIds: string[];
   onSelectionChange: (ids: string[]) => void;
+  onDocumentCountChange?: (count: number) => void;
 }
 
-export function DocumentLibrary({ selectedIds, onSelectionChange }: DocumentLibraryProps) {
+export function DocumentLibrary({
+  selectedIds,
+  onSelectionChange,
+  onDocumentCountChange,
+}: DocumentLibraryProps) {
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -28,6 +33,10 @@ export function DocumentLibrary({ selectedIds, onSelectionChange }: DocumentLibr
       // La bannière de statut backend (health check) couvre déjà ce cas.
     }
   }, []);
+
+  useEffect(() => {
+    onDocumentCountChange?.(documents.length);
+  }, [documents.length, onDocumentCountChange]);
 
   useEffect(() => {
     let cancelled = false;
@@ -51,7 +60,13 @@ export function DocumentLibrary({ selectedIds, onSelectionChange }: DocumentLibr
       for (const file of Array.from(files)) {
         const doc = await uploadDocument(file);
         setDocuments((prev) => [...prev, doc]);
-        onSelectionChange([...selectedIds, doc.id]);
+        // Une sélection vide veut dire "tous les documents" : un nouvel
+        // import y est donc déjà implicitement inclus, pas besoin de le
+        // cocher. On ne l'ajoute à la sélection que si l'utilisateur avait
+        // déjà restreint explicitement sa recherche à certains documents.
+        if (selectedIds.length > 0) {
+          onSelectionChange([...selectedIds, doc.id]);
+        }
       }
     } catch (err) {
       setUploadError((err as Error).message);
@@ -107,8 +122,26 @@ export function DocumentLibrary({ selectedIds, onSelectionChange }: DocumentLibr
       </div>
 
       {documents.length > 0 && (
-        <p className="px-1 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-          Documents ({documents.length})
+        <div className="flex items-center justify-between px-1">
+          <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            Documents ({documents.length})
+          </p>
+          {selectedIds.length > 0 && (
+            <button
+              type="button"
+              className="text-xs text-muted-foreground underline-offset-2 hover:underline"
+              onClick={() => onSelectionChange([])}
+            >
+              Tout désélectionner
+            </button>
+          )}
+        </div>
+      )}
+      {documents.length > 0 && (
+        <p className="px-1 text-xs text-muted-foreground">
+          {selectedIds.length === 0
+            ? "Aucune sélection : la recherche porte sur tous les documents."
+            : `Recherche restreinte à ${selectedIds.length} document${selectedIds.length > 1 ? "s" : ""}.`}
         </p>
       )}
 

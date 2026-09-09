@@ -1,7 +1,7 @@
 from collections.abc import AsyncIterator
 
 from app.config import settings
-from app.core import vector_store
+from app.core import db, vector_store
 from app.core.ollama_client import ollama_client
 from app.core.reranker import rerank
 from app.models.schemas import ChatMessage, SourceOut
@@ -101,12 +101,20 @@ async def _hybrid_search(query: str, doc_ids: list[str]) -> list[dict]:
 async def stream_answer(
     message: str, doc_ids: list[str], history: list[ChatMessage]
 ) -> AsyncIterator[tuple[str, object]]:
+    # Aucune sélection manuelle = chercher dans toute la bibliothèque plutôt
+    # que de forcer l'utilisateur à cocher des cases à chaque question — la
+    # recherche hybride + reranking distingue déjà bien les sujets entre
+    # documents (voir tests), donc ça reste fiable même avec beaucoup de
+    # documents. La sélection manuelle reste possible pour restreindre.
+    if not doc_ids:
+        doc_ids = [d.id for d in db.list_documents()]
+
     if not doc_ids:
         yield ("sources", [])
         yield (
             "token",
-            "Sélectionne au moins un document dans la bibliothèque avant de "
-            "poser une question.",
+            "Importe au moins un document dans la bibliothèque avant de poser "
+            "une question.",
         )
         yield ("done", None)
         return

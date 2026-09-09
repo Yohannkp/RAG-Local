@@ -8,6 +8,7 @@ import { ChatWindow } from "@/components/chat/ChatWindow";
 
 export default function Home() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [documentCount, setDocumentCount] = useState(0);
 
   return (
     <div className="flex h-screen flex-col">
@@ -26,10 +27,11 @@ export default function Home() {
           <DocumentLibrary
             selectedIds={selectedIds}
             onSelectionChange={setSelectedIds}
+            onDocumentCountChange={setDocumentCount}
           />
         </aside>
         <main className="flex-1 overflow-hidden">
-          <ChatWindow selectedIds={selectedIds} />
+          <ChatWindow selectedIds={selectedIds} documentCount={documentCount} />
         </main>
       </div>
     </div>
