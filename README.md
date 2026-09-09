@@ -143,7 +143,17 @@ en fin d'exécution (n'affecte pas ta bibliothèque de documents réels).
   fonctionnalité de l'app qui n'est pas garantie 100% locale
 - `sentence-transformers`/`torch` (reranking) alourdissent significativement
   l'image Docker du backend (~1-2 Go) ; le reranker tourne en CPU pur, le GPU
-  restant entièrement dédié à Ollama
+  restant entièrement dédié à Ollama. Son modèle est préchargé pendant le
+  build de l'image (voir `backend/Dockerfile`) pour éviter un téléchargement
+  de ~470 Mo — donc une première requête anormalement lente — au premier
+  démarrage du conteneur
+- Sur un GPU 8 Go, le modèle de chat (~5,6 Go) et le modèle de vision
+  (~3,2 Go) ne tiennent pas en VRAM simultanément : importer un document avec
+  des images décharge le modèle de chat, qui doit se recharger à froid
+  (~20-30s) à la question suivante — inhérent au matériel, pas un bug. Le
+  `keep_alive` du modèle de vision est volontairement court (1 min, voir
+  `app/config.py`) pour rendre la VRAM au modèle de chat au plus vite après
+  un import plutôt que de la monopoliser inutilement
 - Mono-utilisateur, pas d'authentification — pensé pour un usage local individuel
 - La recherche par défaut porte sur toute la bibliothèque : le corpus BM25 est
   reconstruit à chaque question à partir de tous les chunks des documents

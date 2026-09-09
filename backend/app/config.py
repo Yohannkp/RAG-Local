@@ -12,6 +12,17 @@ class Settings(BaseSettings):
     vision_model: str = "qwen3-vl:4b"
     num_ctx: int = 8192
 
+    # Combien de temps Ollama garde chaque modèle chargé en VRAM après le
+    # dernier appel (au-delà, il faut recharger à froid, ~20-30s). Chat et
+    # vision ne tiennent pas en même temps sur un GPU 8 Go : le modèle de
+    # vision reste chargé le moins longtemps possible pour rendre la VRAM au
+    # modèle de chat aussitôt un import terminé, plutôt que de la monopoliser
+    # inutilement pendant 5 minutes (défaut Ollama) après une simple analyse
+    # d'image ponctuelle.
+    chat_keep_alive: str = "30m"
+    embed_keep_alive: str = "30m"
+    vision_keep_alive: str = "1m"
+
     chunk_size_chars: int = 2400
     chunk_overlap_chars: int = 300
     top_k: int = 5

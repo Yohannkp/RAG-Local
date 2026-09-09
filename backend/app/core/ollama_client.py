@@ -24,7 +24,11 @@ class OllamaClient:
         async with httpx.AsyncClient(timeout=120) as client:
             resp = await client.post(
                 f"{self._base_url}/api/embed",
-                json={"model": settings.embed_model, "input": texts},
+                json={
+                    "model": settings.embed_model,
+                    "input": texts,
+                    "keep_alive": settings.embed_keep_alive,
+                },
             )
             resp.raise_for_status()
             return resp.json()["embeddings"]
@@ -37,6 +41,7 @@ class OllamaClient:
             "messages": messages,
             "stream": True,
             "options": {"num_ctx": num_ctx},
+            "keep_alive": settings.chat_keep_alive,
         }
         async with httpx.AsyncClient(timeout=300) as client:
             async with client.stream(
@@ -64,6 +69,7 @@ class OllamaClient:
                 }
             ],
             "stream": False,
+            "keep_alive": settings.vision_keep_alive,
         }
         async with httpx.AsyncClient(timeout=120) as client:
             resp = await client.post(f"{self._base_url}/api/chat", json=payload)
