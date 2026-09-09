@@ -16,6 +16,11 @@ class Settings(BaseSettings):
     chunk_overlap_chars: int = 300
     top_k: int = 5
 
+    # Recherche hybride : nombre de candidats remontés par chaque méthode
+    # (BM25 + vectoriel) avant fusion RRF et reranking.
+    hybrid_candidates: int = 20
+    reranker_model: str = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
+
     data_dir: Path = DATA_DIR
     uploads_dir: Path = DATA_DIR / "uploads"
     chroma_dir: Path = DATA_DIR / "chroma"

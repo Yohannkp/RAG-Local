@@ -41,12 +41,29 @@ def query(
         include=["documents", "metadatas", "distances"],
     )
     hits: list[dict[str, Any]] = []
+    ids = result.get("ids") or [[]]
     documents = result.get("documents") or [[]]
     metadatas = result.get("metadatas") or [[]]
     distances = result.get("distances") or [[]]
-    for text, meta, dist in zip(documents[0], metadatas[0], distances[0]):
-        hits.append({"text": text, "metadata": meta, "distance": dist})
+    for chunk_id, text, meta, dist in zip(ids[0], documents[0], metadatas[0], distances[0]):
+        hits.append({"id": chunk_id, "text": text, "metadata": meta, "distance": dist})
     return hits
+
+
+def get_all_chunks(doc_ids: list[str]) -> list[dict[str, Any]]:
+    """Tous les chunks des documents selectionnes, sans recherche par similarite.
+    Sert de corpus pour le classement lexical BM25 (recherche hybride)."""
+    if not doc_ids:
+        return []
+    result = _collection.get(
+        where={"doc_id": {"$in": doc_ids}}, include=["documents", "metadatas"]
+    )
+    chunks: list[dict[str, Any]] = []
+    for chunk_id, text, meta in zip(
+        result.get("ids") or [], result.get("documents") or [], result.get("metadatas") or []
+    ):
+        chunks.append({"id": chunk_id, "text": text, "metadata": meta})
+    return chunks
 
 
 def delete_by_doc_id(doc_id: str) -> None:

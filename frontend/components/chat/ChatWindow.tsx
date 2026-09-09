@@ -1,14 +1,24 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AlertTriangle, ShieldCheck } from "lucide-react";
+import dynamic from "next/dynamic";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useChatStream } from "@/hooks/useChatStream";
+import type { Source } from "@/lib/types";
 import { ChatInput } from "./ChatInput";
 import { MessageBubble } from "./MessageBubble";
 
+// react-pdf (via pdfjs-dist) touche des API navigateur (DOMMatrix) absentes
+// cote serveur : ce composant ne doit jamais etre rendu pendant le SSR/build.
+const SourceViewerDialog = dynamic(
+  () => import("./SourceViewerDialog").then((m) => m.SourceViewerDialog),
+  { ssr: false }
+);
+
 export function ChatWindow({ selectedIds }: { selectedIds: string[] }) {
   const { messages, isStreaming, isWarmingUp, error, sendMessage } = useChatStream();
+  const [viewerSource, setViewerSource] = useState<Source | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,6 +46,7 @@ export function ChatWindow({ selectedIds }: { selectedIds: string[] }) {
                 key={i}
                 message={message}
                 isWarmingUp={isWarmingUp && i === messages.length - 1}
+                onOpenSource={setViewerSource}
               />
             ))}
             <div ref={bottomRef} />
@@ -59,6 +70,10 @@ export function ChatWindow({ selectedIds }: { selectedIds: string[] }) {
           }
         />
       </div>
+      <SourceViewerDialog
+        source={viewerSource}
+        onOpenChange={(open) => !open && setViewerSource(null)}
+      />
     </div>
   );
 }

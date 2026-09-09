@@ -1,15 +1,16 @@
 import { Bot, User } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
-import type { ChatMessage } from "@/lib/types";
+import type { ChatMessage, Source } from "@/lib/types";
 import { SourceCitation } from "./SourceCitation";
 
 interface MessageBubbleProps {
   message: ChatMessage;
   isWarmingUp?: boolean;
+  onOpenSource: (source: Source) => void;
 }
 
-export function MessageBubble({ message, isWarmingUp }: MessageBubbleProps) {
+export function MessageBubble({ message, isWarmingUp, onOpenSource }: MessageBubbleProps) {
   const isUser = message.role === "user";
 
   return (
@@ -54,7 +55,7 @@ export function MessageBubble({ message, isWarmingUp }: MessageBubbleProps) {
         {message.sources && message.sources.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {message.sources.map((source) => (
-              <SourceCitation key={source.index} source={source} />
+              <SourceCitation key={source.index} source={source} onOpen={onOpenSource} />
             ))}
           </div>
         )}

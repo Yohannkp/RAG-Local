@@ -12,6 +12,7 @@ class Document(SQLModel, table=True):
     id: str = Field(default_factory=lambda: uuid.uuid4().hex, primary_key=True)
     filename: str
     file_type: str
+    stored_filename: str = ""
     num_chunks: int = 0
     warning: str | None = None
     created_at: datetime = Field(

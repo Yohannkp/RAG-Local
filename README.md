@@ -10,17 +10,31 @@ envoyer des documents à une API cloud (OpenAI, etc.) n'est pas une option.
 Assemblé à partir de projets open-source éprouvés plutôt que réécrit from scratch :
 [Ollama](https://github.com/ollama/ollama) (inférence LLM locale), [Chroma](https://github.com/chroma-core/chroma)
 (base vectorielle embarquée), `pypdf` / `python-docx` (parsing de documents),
-`langchain-text-splitters` (découpage), FastAPI et Next.js/shadcn pour l'assemblage
-et l'interface. La partie écrite à la main — l'orchestration RAG, le système de
-citations et le streaming — reste volontairement simple et lisible (~300 lignes) :
-c'est la partie qui démontre la compréhension du pipeline, plutôt que de la cacher
-derrière un framework RAG tout-en-un.
+`langchain-text-splitters` (découpage), `rank-bm25` (recherche lexicale),
+`sentence-transformers` (reranking cross-encoder), [RAGAS](https://github.com/explodinggradients/ragas)
+(évaluation), `react-pdf` (visionneuse), FastAPI et Next.js/shadcn pour
+l'assemblage et l'interface. La partie écrite à la main — l'orchestration RAG, le
+système de citations, le streaming, la fusion hybride — reste volontairement simple
+et lisible : c'est la partie qui démontre la compréhension du pipeline, plutôt que
+de la cacher derrière un framework RAG tout-en-un.
 
 ## Fonctionnalités
 
 - Import de PDF / DOCX / TXT, découpage et indexation vectorielle locale
+- **Recherche hybride** : fusion (Reciprocal Rank Fusion) d'une recherche
+  vectorielle sémantique et d'une recherche lexicale BM25, puis **reranking**
+  par cross-encoder local (`mmarco-mMiniLMv2-L12-H384-v1`, CPU) — le pipeline
+  standard "retrieve top-N hybride → rerank top-k" pour une meilleure précision
+  qu'un simple `top_k` vectoriel, y compris sur les noms propres/références exactes
+- **Réécriture de requête multi-tour** : une question de suivi ambiguë ("et pour
+  les mineurs ?") est reformulée en question autonome à partir de l'historique
+  avant la recherche, sinon elle ne retrouverait quasiment rien de pertinent
 - Chat en streaming avec réponses **citées** (`[1]`, `[2]`...) renvoyant au document
   et à la page/section source exacte
+- **Visionneuse de source intégrée** : cliquer sur une citation PDF ouvre la page
+  exacte du document original (`react-pdf`) ; pour DOCX/TXT, affiche le passage
+  complet non tronqué — vérifier une réponse ne demande jamais de quitter l'app
+- **Dictée vocale** (Web Speech API du navigateur) pour poser une question à l'oral
 - Le modèle refuse explicitement de répondre si l'information n'est pas dans les
   documents fournis, plutôt que d'halluciner
 - **Images comprises** : toute image significative (>3 Ko — filtre les icônes
@@ -29,6 +43,9 @@ derrière un framework RAG tout-en-un.
   modèle de vision local (`qwen3-vl:4b`) et devient cherchable comme du texte normal
 - Sélection des documents à interroger (un, plusieurs, ou toute la bibliothèque)
 - Bannière d'état si Ollama est injoignable ou qu'un modèle requis est manquant
+- **Suite d'évaluation RAGAS locale** (voir [Évaluation](#évaluation)) : mesure
+  faithfulness / context precision / context recall / answer relevancy sur le
+  pipeline réel, avec le modèle de chat local comme juge — aucun appel externe
 
 ## Stack
 
@@ -38,10 +55,14 @@ derrière un framework RAG tout-en-un.
 | Modèle de chat | `qwen3:8b` (fallback documenté : `qwen2.5:7b-instruct-q4_K_M`) |
 | Modèle de vision | `qwen3-vl:4b` via Ollama (OCR + description d'images, 3,3 Go) |
 | Embeddings | `nomic-embed-text` via Ollama |
+| Recherche lexicale | `rank-bm25` (Okapi BM25), fusionnée au vectoriel via RRF |
+| Reranking | `sentence-transformers` `CrossEncoder`, CPU (le GPU reste dédié à Ollama) |
 | Base vectorielle | Chroma (embarqué, `PersistentClient`) |
 | Backend | FastAPI + Uvicorn, Python 3.12 |
 | Frontend | Next.js 15 (App Router) + TypeScript + Tailwind + shadcn/ui |
+| Visionneuse PDF | `react-pdf` (pdf.js), worker servi localement (pas de CDN) |
 | Transport streaming | Server-Sent Events (SSE) |
+| Évaluation | RAGAS, juge = `qwen3:8b` via `langchain-ollama` |
 
 ## Démarrage rapide
 
@@ -85,7 +106,24 @@ GPU NVIDIA) est fourni en commentaire dans `docker-compose.yml`.
 ## Preuve du "100% local"
 
 Coupe le réseau, puis importe un document et pose une question : tout continue de
-fonctionner. C'est la démonstration la plus parlante de l'architecture.
+fonctionner. C'est la démonstration la plus parlante de l'architecture. Le
+téléchargement ponctuel des modèles Ollama/HuggingFace (une fois, à l'installation)
+est la seule étape qui nécessite Internet — rien à l'usage.
+
+## Évaluation
+
+```bash
+cd backend
+./.venv/Scripts/python eval/run_eval.py
+```
+
+Ingère un document fixture (`eval/fixture_document.txt`, 5 sujets distincts +
+1 question hors-sujet pour vérifier l'absence d'hallucination), exécute le jeu de
+questions de référence (`eval/dataset.py`) à travers le **pipeline réel**
+(recherche hybride + reranking + génération), puis calcule les métriques RAGAS
+avec `qwen3:8b` comme juge local. Résultats détaillés sauvegardés dans
+`eval/last_run_results.json` ; le document fixture est supprimé automatiquement
+en fin d'exécution (n'affecte pas ta bibliothèque de documents réels).
 
 ## Limitations connues (choix de scope, pas des oublis)
 
@@ -97,10 +135,18 @@ fonctionner. C'est la démonstration la plus parlante de l'architecture.
 - Les tableaux DOCX sont bien extraits (texte des cellules, `|`-séparé) ; pour les
   PDF, `pypdf` extrait le texte des tableaux mais sans garantie de préserver
   l'ordre exact des colonnes sur des mises en page complexes
+- La dictée vocale utilise l'API de reconnaissance vocale du navigateur : selon le
+  navigateur (Chrome notamment), elle peut passer par un service en ligne — seule
+  fonctionnalité de l'app qui n'est pas garantie 100% locale
+- `sentence-transformers`/`torch` (reranking) alourdissent significativement
+  l'image Docker du backend (~1-2 Go) ; le reranker tourne en CPU pur, le GPU
+  restant entièrement dédié à Ollama
 - Mono-utilisateur, pas d'authentification — pensé pour un usage local individuel
-- Pas de reranking ni de réécriture de requête multi-tour (voir pistes ci-dessous)
 
 ## Pistes d'amélioration
 
-Reranking cross-encoder, recherche hybride BM25 + vectorielle, réécriture de
-requête multi-tour, jeu d'évaluation type RAGAS, CI GitHub Actions.
+GraphRAG pour le raisonnement inter-documents, boucle agentique (le modèle décide
+de re-chercher s'il manque d'information), OCR dédié (`pytesseract`) en complément
+de l'analyse par vision pour les cas ambigus, CI GitHub Actions exécutant `eval/`
+comme gate de qualité, gestion de l'historique de conversation persistant
+(actuellement en mémoire côté client uniquement).

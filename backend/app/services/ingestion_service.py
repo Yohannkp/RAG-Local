@@ -2,6 +2,7 @@ import asyncio
 import logging
 from pathlib import Path
 
+from app.config import settings
 from app.core import db, vector_store
 from app.core.ollama_client import ollama_client
 from app.core.parsing.docx_parser import parse_docx
@@ -107,7 +108,12 @@ async def ingest_file(path: Path, filename: str, file_type: str) -> db.Document:
         raise ValueError(f"Unsupported file type: {file_type}")
 
     doc = db.add_document(
-        db.Document(filename=filename, file_type=file_type, warning=warning)
+        db.Document(
+            filename=filename,
+            file_type=file_type,
+            stored_filename=path.name,
+            warning=warning,
+        )
     )
 
     chunks = chunk_units(units)
@@ -131,5 +137,8 @@ async def ingest_file(path: Path, filename: str, file_type: str) -> db.Document:
 
 
 def delete_document(doc_id: str) -> None:
+    doc = db.get_document(doc_id)
     vector_store.delete_by_doc_id(doc_id)
     db.delete_document(doc_id)
+    if doc and doc.stored_filename:
+        (settings.uploads_dir / doc.stored_filename).unlink(missing_ok=True)

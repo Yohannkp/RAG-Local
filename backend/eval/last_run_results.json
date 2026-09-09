@@ -1,0 +1,74 @@
+[
+  {
+    "user_input":"Combien de jours de congés payés par an, et combien de RTT ?",
+    "retrieved_contexts":[
+      "Manuel interne - Acme Consulting\n\n1. Politique de congés\nLes employés à temps plein bénéficient de 26 jours de congés payés par an, ainsi\nque de 10 jours de RTT. Les congés doivent être posés au moins deux semaines à\nl'avance via le portail RH, sauf urgence familiale justifiée. Les jours de congés\nnon pris ne sont pas reportables d'une année sur l'autre, sauf accord exceptionnel\nde la direction.\n\n2. Télétravail\nLe télétravail est autorisé jusqu'à 3 jours par semaine, sous validation du\nmanager direct. Les employés en période d'essai ne peuvent pas télétravailler\ndurant leurs deux premiers mois. Le matériel informatique nécessaire (ordinateur\nportable, écran) est fourni par l'entreprise pour les jours de télétravail.\n\n3. Notes de frais\nLe plafond de remboursement pour un repas d'affaires est de 60 euros par\npersonne. Les frais de transport en train ou en avion sont remboursés sur\nprésentation du billet. Les notes de frais doivent être soumises dans les 30\njours suivant la dépense, via l'outil Expensify. Aucun remboursement n'est\npossible pour les dépenses personnelles.\n\n4. Sécurité informatique\nLe mot de passe du compte professionnel doit être changé tous les 90 jours et\ncontenir au moins 12 caractères. L'authentification à deux facteurs est\nobligatoire pour tous les accès aux outils internes. Toute perte ou vol\nd'équipement professionnel doit être signalé au service informatique dans les\n24 heures.\n\n5. Entretiens annuels\nChaque employé bénéficie d'un entretien annuel d'évaluation avec son manager,\ngénéralement au mois de janvier. Un entretien professionnel, distinct de\nl'entretien annuel, a lieu tous les deux ans et porte sur les perspectives\nd'évolution de carrière."
+    ],
+    "response":"Les employés à temps plein bénéficient de 26 jours de congés payés par an et de 10 jours de RTT [1].",
+    "reference":"26 jours de congés payés par an et 10 jours de RTT.",
+    "faithfulness":1.0,
+    "context_precision":0.9999999999,
+    "context_recall":1.0,
+    "answer_relevancy":0.5998165343
+  },
+  {
+    "user_input":"Combien de jours de télétravail sont autorisés par semaine ?",
+    "retrieved_contexts":[
+      "Manuel interne - Acme Consulting\n\n1. Politique de congés\nLes employés à temps plein bénéficient de 26 jours de congés payés par an, ainsi\nque de 10 jours de RTT. Les congés doivent être posés au moins deux semaines à\nl'avance via le portail RH, sauf urgence familiale justifiée. Les jours de congés\nnon pris ne sont pas reportables d'une année sur l'autre, sauf accord exceptionnel\nde la direction.\n\n2. Télétravail\nLe télétravail est autorisé jusqu'à 3 jours par semaine, sous validation du\nmanager direct. Les employés en période d'essai ne peuvent pas télétravailler\ndurant leurs deux premiers mois. Le matériel informatique nécessaire (ordinateur\nportable, écran) est fourni par l'entreprise pour les jours de télétravail.\n\n3. Notes de frais\nLe plafond de remboursement pour un repas d'affaires est de 60 euros par\npersonne. Les frais de transport en train ou en avion sont remboursés sur\nprésentation du billet. Les notes de frais doivent être soumises dans les 30\njours suivant la dépense, via l'outil Expensify. Aucun remboursement n'est\npossible pour les dépenses personnelles.\n\n4. Sécurité informatique\nLe mot de passe du compte professionnel doit être changé tous les 90 jours et\ncontenir au moins 12 caractères. L'authentification à deux facteurs est\nobligatoire pour tous les accès aux outils internes. Toute perte ou vol\nd'équipement professionnel doit être signalé au service informatique dans les\n24 heures.\n\n5. Entretiens annuels\nChaque employé bénéficie d'un entretien annuel d'évaluation avec son manager,\ngénéralement au mois de janvier. Un entretien professionnel, distinct de\nl'entretien annuel, a lieu tous les deux ans et porte sur les perspectives\nd'évolution de carrière."
+    ],
+    "response":"Le télétravail est autorisé jusqu'à 3 jours par semaine [1].",
+    "reference":"3 jours de télétravail par semaine, sous validation du manager.",
+    "faithfulness":null,
+    "context_precision":0.9999999999,
+    "context_recall":1.0,
+    "answer_relevancy":0.4762280516
+  },
+  {
+    "user_input":"Quel est le plafond de remboursement pour un repas d'affaires ?",
+    "retrieved_contexts":[
+      "Manuel interne - Acme Consulting\n\n1. Politique de congés\nLes employés à temps plein bénéficient de 26 jours de congés payés par an, ainsi\nque de 10 jours de RTT. Les congés doivent être posés au moins deux semaines à\nl'avance via le portail RH, sauf urgence familiale justifiée. Les jours de congés\nnon pris ne sont pas reportables d'une année sur l'autre, sauf accord exceptionnel\nde la direction.\n\n2. Télétravail\nLe télétravail est autorisé jusqu'à 3 jours par semaine, sous validation du\nmanager direct. Les employés en période d'essai ne peuvent pas télétravailler\ndurant leurs deux premiers mois. Le matériel informatique nécessaire (ordinateur\nportable, écran) est fourni par l'entreprise pour les jours de télétravail.\n\n3. Notes de frais\nLe plafond de remboursement pour un repas d'affaires est de 60 euros par\npersonne. Les frais de transport en train ou en avion sont remboursés sur\nprésentation du billet. Les notes de frais doivent être soumises dans les 30\njours suivant la dépense, via l'outil Expensify. Aucun remboursement n'est\npossible pour les dépenses personnelles.\n\n4. Sécurité informatique\nLe mot de passe du compte professionnel doit être changé tous les 90 jours et\ncontenir au moins 12 caractères. L'authentification à deux facteurs est\nobligatoire pour tous les accès aux outils internes. Toute perte ou vol\nd'équipement professionnel doit être signalé au service informatique dans les\n24 heures.\n\n5. Entretiens annuels\nChaque employé bénéficie d'un entretien annuel d'évaluation avec son manager,\ngénéralement au mois de janvier. Un entretien professionnel, distinct de\nl'entretien annuel, a lieu tous les deux ans et porte sur les perspectives\nd'évolution de carrière."
+    ],
+    "response":"Le plafond de remboursement pour un repas d'affaires est de 60 euros par personne [1].",
+    "reference":"60 euros par personne.",
+    "faithfulness":1.0,
+    "context_precision":0.9999999999,
+    "context_recall":1.0,
+    "answer_relevancy":0.5001520025
+  },
+  {
+    "user_input":"À quelle fréquence le mot de passe professionnel doit-il être changé, et quelle est sa longueur minimale ?",
+    "retrieved_contexts":[
+      "Manuel interne - Acme Consulting\n\n1. Politique de congés\nLes employés à temps plein bénéficient de 26 jours de congés payés par an, ainsi\nque de 10 jours de RTT. Les congés doivent être posés au moins deux semaines à\nl'avance via le portail RH, sauf urgence familiale justifiée. Les jours de congés\nnon pris ne sont pas reportables d'une année sur l'autre, sauf accord exceptionnel\nde la direction.\n\n2. Télétravail\nLe télétravail est autorisé jusqu'à 3 jours par semaine, sous validation du\nmanager direct. Les employés en période d'essai ne peuvent pas télétravailler\ndurant leurs deux premiers mois. Le matériel informatique nécessaire (ordinateur\nportable, écran) est fourni par l'entreprise pour les jours de télétravail.\n\n3. Notes de frais\nLe plafond de remboursement pour un repas d'affaires est de 60 euros par\npersonne. Les frais de transport en train ou en avion sont remboursés sur\nprésentation du billet. Les notes de frais doivent être soumises dans les 30\njours suivant la dépense, via l'outil Expensify. Aucun remboursement n'est\npossible pour les dépenses personnelles.\n\n4. Sécurité informatique\nLe mot de passe du compte professionnel doit être changé tous les 90 jours et\ncontenir au moins 12 caractères. L'authentification à deux facteurs est\nobligatoire pour tous les accès aux outils internes. Toute perte ou vol\nd'équipement professionnel doit être signalé au service informatique dans les\n24 heures.\n\n5. Entretiens annuels\nChaque employé bénéficie d'un entretien annuel d'évaluation avec son manager,\ngénéralement au mois de janvier. Un entretien professionnel, distinct de\nl'entretien annuel, a lieu tous les deux ans et porte sur les perspectives\nd'évolution de carrière."
+    ],
+    "response":"Le mot de passe professionnel doit être changé tous les 90 jours et doit contenir au moins 12 caractères [1].",
+    "reference":"Tous les 90 jours, avec un minimum de 12 caractères.",
+    "faithfulness":1.0,
+    "context_precision":0.9999999999,
+    "context_recall":1.0,
+    "answer_relevancy":0.5032917802
+  },
+  {
+    "user_input":"Quelle est la différence entre l'entretien annuel et l'entretien professionnel ?",
+    "retrieved_contexts":[
+      "Manuel interne - Acme Consulting\n\n1. Politique de congés\nLes employés à temps plein bénéficient de 26 jours de congés payés par an, ainsi\nque de 10 jours de RTT. Les congés doivent être posés au moins deux semaines à\nl'avance via le portail RH, sauf urgence familiale justifiée. Les jours de congés\nnon pris ne sont pas reportables d'une année sur l'autre, sauf accord exceptionnel\nde la direction.\n\n2. Télétravail\nLe télétravail est autorisé jusqu'à 3 jours par semaine, sous validation du\nmanager direct. Les employés en période d'essai ne peuvent pas télétravailler\ndurant leurs deux premiers mois. Le matériel informatique nécessaire (ordinateur\nportable, écran) est fourni par l'entreprise pour les jours de télétravail.\n\n3. Notes de frais\nLe plafond de remboursement pour un repas d'affaires est de 60 euros par\npersonne. Les frais de transport en train ou en avion sont remboursés sur\nprésentation du billet. Les notes de frais doivent être soumises dans les 30\njours suivant la dépense, via l'outil Expensify. Aucun remboursement n'est\npossible pour les dépenses personnelles.\n\n4. Sécurité informatique\nLe mot de passe du compte professionnel doit être changé tous les 90 jours et\ncontenir au moins 12 caractères. L'authentification à deux facteurs est\nobligatoire pour tous les accès aux outils internes. Toute perte ou vol\nd'équipement professionnel doit être signalé au service informatique dans les\n24 heures.\n\n5. Entretiens annuels\nChaque employé bénéficie d'un entretien annuel d'évaluation avec son manager,\ngénéralement au mois de janvier. Un entretien professionnel, distinct de\nl'entretien annuel, a lieu tous les deux ans et porte sur les perspectives\nd'évolution de carrière."
+    ],
+    "response":"L'entretien annuel est un évaluation de la performance de l'employé avec son manager, généralement au mois de janvier [1]. En revanche, l'entretien professionnel, qui a lieu tous les deux ans, porte spécifiquement sur les perspectives d'évolution de carrière [1]. La principale différence réside dans leur objectif : l'entretien annuel vise à évaluer le travail effectué, tandis que l'entretien professionnel s'oriente sur les opportunités de développement professionnel.",
+    "reference":"L'entretien annuel a lieu chaque année (généralement en janvier) et évalue la performance ; l'entretien professionnel a lieu tous les deux ans et porte sur les perspectives d'évolution de carrière.",
+    "faithfulness":1.0,
+    "context_precision":0.9999999999,
+    "context_recall":1.0,
+    "answer_relevancy":0.6129976102
+  },
+  {
+    "user_input":"Quelle est la couleur du logo de l'entreprise ?",
+    "retrieved_contexts":[
+      "Manuel interne - Acme Consulting\n\n1. Politique de congés\nLes employés à temps plein bénéficient de 26 jours de congés payés par an, ainsi\nque de 10 jours de RTT. Les congés doivent être posés au moins deux semaines à\nl'avance via le portail RH, sauf urgence familiale justifiée. Les jours de congés\nnon pris ne sont pas reportables d'une année sur l'autre, sauf accord exceptionnel\nde la direction.\n\n2. Télétravail\nLe télétravail est autorisé jusqu'à 3 jours par semaine, sous validation du\nmanager direct. Les employés en période d'essai ne peuvent pas télétravailler\ndurant leurs deux premiers mois. Le matériel informatique nécessaire (ordinateur\nportable, écran) est fourni par l'entreprise pour les jours de télétravail.\n\n3. Notes de frais\nLe plafond de remboursement pour un repas d'affaires est de 60 euros par\npersonne. Les frais de transport en train ou en avion sont remboursés sur\nprésentation du billet. Les notes de frais doivent être soumises dans les 30\njours suivant la dépense, via l'outil Expensify. Aucun remboursement n'est\npossible pour les dépenses personnelles.\n\n4. Sécurité informatique\nLe mot de passe du compte professionnel doit être changé tous les 90 jours et\ncontenir au moins 12 caractères. L'authentification à deux facteurs est\nobligatoire pour tous les accès aux outils internes. Toute perte ou vol\nd'équipement professionnel doit être signalé au service informatique dans les\n24 heures.\n\n5. Entretiens annuels\nChaque employé bénéficie d'un entretien annuel d'évaluation avec son manager,\ngénéralement au mois de janvier. Un entretien professionnel, distinct de\nl'entretien annuel, a lieu tous les deux ans et porte sur les perspectives\nd'évolution de carrière."
+    ],
+    "response":"La couleur du logo de l'entreprise n'est pas mentionnée dans les documents fournis [1].",
+    "reference":"Cette information n'est pas présente dans le document.",
+    "faithfulness":null,
+    "context_precision":null,
+    "context_recall":null,
+    "answer_relevancy":null
+  }
+]

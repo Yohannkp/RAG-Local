@@ -10,3 +10,19 @@ langchain-text-splitters==0.3.4
 chromadb==0.5.23
 posthog<3
 python-multipart==0.0.20
+
+# Recherche hybride + reranking (voir app/services/hybrid_search.py, app/core/reranker.py)
+# sentence-transformers pinné en 3.4.x (pas la dernière 6.x) : chromadb==0.5.23
+# exige tokenizers<=0.20.3, incompatible avec le huggingface-hub>=1.3 requis par
+# sentence-transformers 6.x — 3.4.1 reste sur l'ancienne génération huggingface-hub
+# et résout proprement avec chromadb.
+rank-bm25==0.2.2
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.14.0
+sentence-transformers==3.4.1
+
+# Evaluation RAG locale (voir eval/) — pin ragas 0.2.x : la 0.4.x tire une
+# combinaison langchain 1.x / langchain-community incompatible au moment de
+# l'écriture (import cassé de langchain_community.chat_models.vertexai).
+ragas==0.2.15
+langchain-ollama==0.2.3
