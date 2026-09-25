@@ -12,3 +12,7 @@ Thumbs.db
 # Éditeurs
 .vscode/
 .idea/
+
+# Documents et index locaux (jamais publier)
+backend/data/
+backend/eval/__pycache__/
