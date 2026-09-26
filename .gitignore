@@ -16,3 +16,11 @@ Thumbs.db
 # Documents et index locaux (jamais publier)
 backend/data/
 backend/eval/__pycache__/
+
+# Frontend (Next.js) — build et dépendances
+frontend/.next/
+frontend/node_modules/
+frontend/out/
+
+# Sorties d outils tiers (Skill_Seekers, etc.)
+output/
