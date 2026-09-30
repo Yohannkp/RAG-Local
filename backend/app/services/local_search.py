@@ -18,6 +18,7 @@ PARCE QUE tout a été analysé. Trois garanties en découlent :
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import io
 import json
 import os
@@ -150,6 +151,21 @@ def _pdf_has_images(path: Path) -> bool:
         return any(page.images for page in parse_pdf(str(path)))
     except Exception:
         return False
+
+
+def select_pdf_images(pages: list, limit: int) -> list[tuple[int, bytes]]:
+    """Les images d'un PDF qui méritent une description : sans doublons (logos et captures
+    répétés d'une page à l'autre), les plus lourdes d'abord, remises dans l'ordre des pages."""
+    seen: set[bytes] = set()
+    candidates: list[tuple[int, bytes]] = []
+    for page in pages:
+        for data in page.images:
+            digest = hashlib.sha1(data).digest()
+            if digest not in seen:
+                seen.add(digest)
+                candidates.append((page.page_number, data))
+    best = sorted(candidates, key=lambda c: len(c[1]), reverse=True)[:max(limit, 0)]
+    return sorted(best, key=lambda c: c[0])
 
 
 def is_image_file(path: Path) -> bool:
@@ -500,17 +516,18 @@ async def _build_item(file_path: Path) -> dict[str, Any] | None:
         return {**item, "description": description, "kind": kind, "taken_at": taken,
                 "content": _image_document(item, description, taken)}
 
-    item = _make_scan_item(file_path)
+    item = await asyncio.to_thread(_make_scan_item, file_path)
     if not item:
         return None
     if item["extension"] == ".pdf":
         _set_index_progress(current_action="Analyse et description du PDF")
-        pdf_pages = parse_pdf(item["path"])
+        pdf_pages = await asyncio.to_thread(parse_pdf, item["path"])
+        images = select_pdf_images(pdf_pages, settings.local_pdf_max_images)
         page_descriptions: list[str] = []
-        for page in pdf_pages:
-            for image in page.images:
-                description = await ollama_client.describe_image(image)
-                page_descriptions.append(f"Page {page.page_number} : {description}")
+        for k, (page_number, image) in enumerate(images, start=1):
+            _set_index_progress(current_action=f"Description des images du PDF ({k}/{len(images)})")
+            description = await ollama_client.describe_image(image)
+            page_descriptions.append(f"Page {page_number} : {description}")
         text_description = ""
         if item["content"].strip() and not item["content"].startswith("Document visuel"):
             text_description = await ollama_client.describe_text(item["content"], item["filename"])

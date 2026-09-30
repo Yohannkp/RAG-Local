@@ -49,6 +49,9 @@ class Settings(BaseSettings):
     # Images plus petites que ça = icônes, pictogrammes, miniatures : ignorées.
     local_min_image_bytes: int = 30_000
     local_min_image_side: int = 200
+    # Images décrites par PDF (les plus lourdes, sans doublons). Un guide logiciel peut en
+    # contenir des centaines : 713 pour un PDF de 23 pages, soit deux heures de modèle de vision.
+    local_pdf_max_images: int = 6
     # Nouveau scan automatique avant une question si le dernier date de plus de…
     local_rescan_seconds: int = 300
     # Combien de temps une question attend la fin de la phase de découverte.

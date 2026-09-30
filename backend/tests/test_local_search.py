@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from app.services.local_search import extract_text_from_file, is_image_file, scan_root
+from app.core.parsing.pdf_parser import PageUnit
+from app.services.local_search import extract_text_from_file, is_image_file, scan_root, select_pdf_images
 
 
 def test_extract_text_from_file_reads_plain_text(tmp_path: Path):
@@ -47,3 +48,18 @@ def test_scan_root_includes_images_for_visual_description(tmp_path: Path):
 
     assert is_image_file(image_path)
     assert any(item["filename"] == "plage.jpg" for item in files)
+
+
+def test_select_pdf_images_dedupes_keeps_largest_and_page_order():
+    logo = b"L" * 4000
+    pages = [
+        PageUnit(page_number=1, text="", images=[logo, b"a" * 9000]),
+        PageUnit(page_number=2, text="", images=[logo, b"b" * 5000, b"c" * 20000]),
+        PageUnit(page_number=3, text="", images=[logo]),
+    ]
+
+    selected = select_pdf_images(pages, limit=2)
+
+    # le logo répété n'est compté qu'une fois ; les deux plus lourdes sont gardées, dans l'ordre des pages
+    assert [(page, len(data)) for page, data in selected] == [(1, 9000), (2, 20000)]
+    assert select_pdf_images(pages, limit=0) == []
