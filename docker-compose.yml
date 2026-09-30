@@ -8,8 +8,11 @@ services:
       RAG_CHAT_MODEL: qwen3:8b
       RAG_EMBED_MODEL: nomic-embed-text
       RAG_VISION_MODEL: qwen3-vl:4b
+      RAG_LOCAL_INDEX_ROOT: /host-home
+      RAG_LOCAL_HOST_ROOT: ${USERPROFILE}
     volumes:
       - ./backend/data:/app/data
+      - "${USERPROFILE}:/host-home:ro"
     extra_hosts:
       - "host.docker.internal:host-gateway" # requis sous Linux, no-op sous Windows/Mac
 

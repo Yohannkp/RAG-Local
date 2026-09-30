@@ -38,7 +38,48 @@ class Settings(BaseSettings):
     # (BM25 + vectoriel) avant fusion RRF et reranking.
     hybrid_candidates: int = 20
     reranker_model: str = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
-
+    # Recherche locale sur le disque : indexe un dossier racine local pour des
+    # interrogations rapides du type "ou est ce fichier ?".
+    local_index_root: str = str(Path.home())
+    local_host_root: str = ""
+    # Plafond de sécurité seulement : le scan doit couvrir tout le disque pour
+    # pouvoir affirmer qu'un fichier n'existe pas. S'il est atteint, l'analyse
+    # est marquée « tronquée » et l'assistant ne prétend plus avoir tout vu.
+    local_index_max_files: int = 200000
+    # Images plus petites que ça = icônes, pictogrammes, miniatures : ignorées.
+    local_min_image_bytes: int = 30_000
+    local_min_image_side: int = 200
+    # Nouveau scan automatique avant une question si le dernier date de plus de…
+    local_rescan_seconds: int = 300
+    # Combien de temps une question attend la fin de la phase de découverte.
+    local_discovery_wait_seconds: float = 20.0
+    # Repli si le modèle de chat ne peut pas juger les candidats : cosinus minimal.
+    # Surveillance temps réel : inutile (et coûteuse) sur un montage Docker ; un re-scan
+    # incrémental est lancé à chaque question.
+    local_watch_enabled: bool = False
+    local_min_cosine: float = 0.62
+    # Nombre de candidats examinés (recherche vectorielle + mots-clés) puis jugés.
+    local_candidates: int = 40
+    local_judge_batch: int = 10
+    local_judge_max: int = 30
+    local_index_manifest_path: Path = DATA_DIR / "local_index_manifest.json"
+    local_index_ignored_dirs: list[str] = [
+        ".git",
+        ".idea",
+        ".vscode",
+        ".venv",
+        "venv",
+        "node_modules",
+        "__pycache__",
+        ".pytest_cache",
+        ".mypy_cache",
+        ".next",
+        "dist",
+        "build",
+        "bin",
+        "obj",
+        "target",
+    ]
     data_dir: Path = DATA_DIR
     uploads_dir: Path = DATA_DIR / "uploads"
     chroma_dir: Path = DATA_DIR / "chroma"

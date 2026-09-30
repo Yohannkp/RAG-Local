@@ -45,6 +45,13 @@ de la cacher derrière un framework RAG tout-en-un.
   sélectionner un document à chaque question, même avec beaucoup de fichiers
   importés ; la sélection manuelle reste possible pour restreindre la recherche
   à un ou plusieurs documents précis
+- **Mode « Question sur mon ordinateur »** séparé du chat documentaire : indexe
+  un dossier local, répond aux questions en langage naturel, cite les fichiers
+  retrouvés et permet de les ouvrir directement
+- **Index local incrémental** : les fichiers inchangés ne sont pas ré-embeddes ;
+  les images (`jpg`, `png`, `webp`, etc.) sont décrites par `qwen3-vl:4b` et les
+  PDF textuels reçoivent un résumé local, afin qu'une question comme « où sont
+  mes photos prises à la plage ? » puisse retrouver les bons fichiers
 - Bannière d'état si Ollama est injoignable ou qu'un modèle requis est manquant
 - **Suite d'évaluation RAGAS locale** (voir [Évaluation](#évaluation)) : mesure
   faithfulness / context precision / context recall / answer relevancy sur le

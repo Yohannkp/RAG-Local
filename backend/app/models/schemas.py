@@ -35,3 +35,32 @@ class SourceOut(BaseModel):
 class HealthOut(BaseModel):
     ollama_reachable: bool
     models: dict[str, bool]
+
+
+class LocalIndexRequest(BaseModel):
+    root_path: str
+    max_files: int = 5000
+
+
+class LocalSearchRequest(BaseModel):
+    query: str
+    limit: int = 5
+    root_path: str | None = None
+    directory: str | None = None
+    extensions: list[str] | None = None
+    modified_after: str | None = None
+    modified_before: str | None = None
+
+
+class LocalChatRequest(LocalSearchRequest):
+    history: list[ChatMessage] = []
+
+
+class LocalSearchResult(BaseModel):
+    path: str
+    filename: str
+    directory: str
+    extension: str
+    snippet: str
+    score: float
+    modified_at: str | None = None

@@ -10,6 +10,7 @@ langchain-text-splitters==0.3.4
 chromadb==0.5.23
 posthog<3
 python-multipart==0.0.20
+watchdog==6.0.0
 
 # Recherche hybride + reranking (voir app/services/hybrid_search.py, app/core/reranker.py)
 # sentence-transformers pinné en 3.4.x (pas la dernière 6.x) : chromadb==0.5.23
@@ -26,3 +27,7 @@ sentence-transformers==3.4.1
 # l'écriture (import cassé de langchain_community.chat_models.vertexai).
 ragas==0.2.15
 langchain-ollama==0.2.3
+
+# Tests
+pytest==8.3.4
+pytest-asyncio==0.25.2

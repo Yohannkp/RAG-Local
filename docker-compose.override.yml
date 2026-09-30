@@ -1,0 +1,8 @@
+# Développement : le code du backend est monté et rechargé à chaud.
+services:
+  backend:
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/app
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/data:/app/data
+      - "${USERPROFILE}:/host-home:ro"

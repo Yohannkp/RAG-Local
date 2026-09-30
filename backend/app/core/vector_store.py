@@ -10,14 +10,32 @@ _client = chromadb.PersistentClient(
     settings=ChromaSettings(anonymized_telemetry=False),
 )
 
+
+def get_or_create_collection(name: str):
+    """Retourne une collection persistante ne recourant pas au fallback
+    d'embedder auto de Chroma."""
+    return _client.get_or_create_collection(name=name, embedding_function=None)
+
+
 # embedding_function=None: embeddings are always supplied explicitly by the
 # ingestion/retrieval services (via Ollama). This guarantees Chroma never falls
 # back to auto-downloading its default ONNX embedding model from Hugging Face,
 # which would silently break the "nothing ever leaves/downloads to the machine
 # at query time" privacy guarantee.
-_collection = _client.get_or_create_collection(
-    name="documents", embedding_function=None
-)
+_collection = get_or_create_collection("documents")
+
+
+def local_collection():
+    return get_or_create_collection("local_files")
+
+
+def reset_local_collection():
+    """Vide l'index des fichiers locaux (changement de format d'index)."""
+    try:
+        _client.delete_collection("local_files")
+    except Exception:
+        pass
+    return get_or_create_collection("local_files")
 
 
 def add_chunks(
